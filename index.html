@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>轮播图</title>
+	<style type="text/css">
+		* {
+			padding: 0;
+			margin: 0;
+		}
+		a {
+			text-decoration: none;
+		}
+		a:link,a:visited{
+			color:#5e5e5e;
+		}
+		section.banner {
+			width: 1200px;
+			height: 460px;
+			margin: 30px auto;
+			position: relative;
+			overflow: hidden;
+		}
+		.banner-main {
+			width: 1200px;
+			height: 460px;
+			position: relative;
+			overflow: hidden;
+		}
+		.banner-slide {
+			width: 1200px;
+			height: 460px;
+			float: left;
+			background-repeat: no-repeat;
+			display: none;
+		}
+		.slide-active {
+			display: block;
+		}
+		.slide1 {
+			background-image: url(img/bg1.jpg);
+		}
+		.slide2 {
+			background-image: url(img/bg2.jpg);
+		}
+		.slide3 {
+			background-image: url(img/bg3.jpg);
+		}
+		.button {
+			position: absolute;
+			left: 0;
+			top: 50%;
+			width: 40px;
+			height: 80px;
+			margin-top: -40px;
+			background: url(img/arrow.png) center center no-repeat;
+			transform:rotate(180deg);
+			-webkit-transform:rotate(180deg);
+			-moz-transform:rotate(180deg);
+		}
+		.next {
+			right: 0;
+			left: auto;
+			transform:rotate(0deg);
+			-webkit-transform:rotate(0deg);
+			-moz-transform:rotate(0deg);
+		}
+		.button:hover {
+			background-color: #333;
+			opacity: 0.8;
+			filter: alpha(opacity=80);
+		}
+		.dots {
+			position: absolute;
+			padding-right: 24px;
+			bottom: 24px;
+			right: 0;
+			text-align: right;
+			line-height: 24px;
+		}
+		.dots span {
+			display: inline-block;
+			width: 12px;
+			height: 12px;
+			border-radius: 50%;
+			background: rgba(7,17,7,0.2);
+			margin-left: 8px;
+			cursor: pointer;
+			box-shadow: 0px 0px 0px 2px rgba(255,255,255,0.8) inset;
+		}
+		.dots span.active {
+			box-shadow: 0px 0px 0px 2px rgba(7,17,7,0.2) inset; 
+			background: rgba(255,255,255,0.8);
+		}
+	</style>
+</head>
+<body>
+	<section class="banner" id="main">
+		<div class="banner-main" id="banner-main">
+			<a href="#">
+				<div class="banner-slide slide1 slide-active"></div>
+			</a>
+			<a href="#">
+				<div class="banner-slide slide2"></div>
+			</a>
+			<a href="#">
+				<div class="banner-slide slide3"></div>
+			</a>
+		</div>
+		<a href="javaacript:void(0);" class="button prev" id="prev"></a>
+		<a href="javaacript:void(0);" class="button next" id="next"></a>
+		<div class="dots" id="dots">
+			<span class="active"></span>
+			<span></span>
+			<span></span>
+		</div>
+	</section>
+	<script type="text/javascript">
+		var timer = null,
+			index = 0,
+			banner = document.getElementById('banner-main'),
+			pics = banner.getElementsByTagName('div'),
+			dots = document.getElementById('dots').getElementsByTagName("span"),
+			size = pics.length,
+			next = document.getElementById('next'),
+			prev = document.getElementById('prev');
+		// 清除定时器
+		function stopAutoPlay(){
+			if(timer){
+				clearInterval(timer);
+			}
+		}
+
+		//自动播放 
+		function autoPlay(){
+			timer = setInterval(function(){
+				index++;
+				if(index >= size){
+					index = 0;
+				}
+				changePic();
+			},3000);
+		}
+
+		// 切换图片
+		function changePic(){
+			for(var i=0,len = dots.length;i<len;i++){
+				dots[i].className = "";
+				pics[i].style.display = "none";
+			}
+			dots[index].className = "active";
+			pics[index].style.display = "block";
+		}
+		function slidePlay(){
+			var main = document.getElementById('main');
+			main.onmouseover = function(){
+				stopAutoPlay();
+			}
+			main.onmouseout = function(){
+				autoPlay();
+			}
+			main.onmouseout();
+
+			// 点击右下小圆点切换
+			for(var i=0,len=dots.length;i<len;i++){
+				dots[i].id = i;
+				dots[i].onclick = function(){
+					index = this.id;
+					changePic();
+				}
+			}
+
+			// 下一页
+			next.onclick = function(){
+				index++;
+				if(index >= size){
+					index = 0;
+				}
+				changePic();
+			}
+
+			// 上一页
+			prev.onclick = function(){
+				index--;
+				if(index < 0){
+					index = size-1;
+				}
+				changePic();
+			}
+		}
+
+		slidePlay();
+	</script>
+</body>
+</html>
